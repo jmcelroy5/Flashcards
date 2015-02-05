@@ -33,8 +33,7 @@ mongoose.connect( 'mongodb://localhost/flashcards' );
 var schema = new mongoose.Schema({
 	_id: shortId,
 	word: String,
-	definition: String,
-	difficulty: Number
+	definition: String
 });
 
 // model
@@ -56,6 +55,8 @@ router.get('/', function(req,resp){
 	resp.json({ message: 'the api is working!' });
 });
 
+var DIFFICULTIES
+
 // router.route() handles multiple routes for the same URI
 // /flashcards handles all the HTTP requests that end in /flashcards
 router.route('/flashcards')
@@ -64,8 +65,7 @@ router.route('/flashcards')
 
 		var flashcard = new Flashcard({
 			word: req.body.word,
-			definition: req.body.definition,
-			difficulty: req.body.difficulty
+			definition: req.body.definition
 		});
 
 		flashcard.save(function(err){
@@ -125,7 +125,7 @@ router.route('/flashcards/:flashcard_id')
 	});
 
 // All routes will be prefixed with /api
-app.use('/api', router)
+app.use('/api', router);
 
 // START THE SERVER
 // ================================================

@@ -3,21 +3,29 @@ var app = app || {};
 app.FlashcardView = Backbone.View.extend({
 	tagName: 'div',
 	template: _.template($('#flashcard-template').html()),
-	events: {},
+	events: {
+		'click .delete': 'deleteCard'
+	},
 	initialize: function() {
-		// create a new dom element
-		// this.$el = $(".flashcard");
 		console.log("New flashcard view initialized.");
 	},
 	render: function(){
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
+	},
+	deleteCard: function(e){
+		this.model.destroy();
+		this.remove();
 	}
 });
 
 app.FlashcardSetView = Backbone.View.extend({
-	el: $("#flashcard-container"),
+	el: $('#flashcard-container'),	// grabs an existing DOM element
 	tagName: "div",
+	template: _.template($('#flashcard-set-template').html()),
+	events: {
+		'click .btn-add': 'addCard',
+	},
 	initialize: function(){
 		this.collection = new app.FlashcardSet();
 		this.collection.fetch({reset: true});
@@ -31,9 +39,20 @@ app.FlashcardSetView = Backbone.View.extend({
 		this.collection.each(function(flashcard){
 			this.renderFlashcard(flashcard);
 		}, this);
+		var addCardForm = this.template();
+		this.$el.append(addCardForm);
 	},
 	renderFlashcard: function(flashcard){
 		var flashcardView = new app.FlashcardView({model: flashcard});
 		this.$el.append(flashcardView.render().el);
+	},
+	addCard: function(e){
+		e.preventDefault();
+		var flashcard = {};
+		var formData = $("#add-card-form").serializeArray();
+		formData.map(function(field){
+			flashcard[field.name] = field.value;
+		});
+		this.collection.create(flashcard);
 	}
 });

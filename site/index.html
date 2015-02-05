@@ -3,15 +3,35 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Flashcards</title>
+
+	<link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
 	<h1> Flashcards </h1>
 	<div id="flashcard-container"></div>
 
+	<!-- Flashcard set view -->
+	<script type="text/template" id="flashcard-set-template">
+		<h2> Add a card </h2>
+		<form action="#" id="add-card-form">
+			Word  <input type="text" name="word"><br>
+			Definition <input type="text" name="definition"><br>
+			<input class="btn-add" type="submit">
+		</form>
+	</script>
+	
+	<!-- Individual flashcard view (subview of flashcard set) -->
 	<script type="text/template" id="flashcard-template">
-		<p> <%= word %> </p>
-		<p> <%= definition %> </p>
-		<p> <%= difficulty %> </p>
+	<div class="card">
+		<div class="card-content">
+			<p class="word"> <%= word %> </p>
+			<p class="definition"> <%= definition %> </p>
+		</div>
+		<div class="edit-card">
+			<a href="#" class="edit"> Edit </a><br>
+			<a href="#" class="delete"> Delete </a>
+		</div>
+	</div>
 	</script>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
