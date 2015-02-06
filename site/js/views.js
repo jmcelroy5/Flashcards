@@ -22,6 +22,7 @@ app.FlashcardView = Backbone.View.extend({
 	editCard: function(){
 		var editView = new app.EditFlashcardView({model: this.model});
 		this.$el.replaceWith(editView.el);
+		this.remove();
 	}
 });
 
@@ -50,6 +51,7 @@ app.EditFlashcardView = Backbone.View.extend({
 		this.model.save();
 		var flashcardView = new app.FlashcardView({model: this.model});
 		this.$el.replaceWith(flashcardView.$el);
+		this.remove();
 	}
 });
 
