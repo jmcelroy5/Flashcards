@@ -45,8 +45,8 @@ app.EditFlashcardView = Backbone.View.extend({
 		e.preventDefault();
 		var word = this.$el.find(".edit-word").val();
 		var definition = this.$el.find(".edit-definition").val();
-		this.model.set("word",word);
-		this.model.set("definition",definition);
+		this.model.set("word", word);
+		this.model.set("definition", definition);
 		this.model.save();
 		var flashcardView = new app.FlashcardView({model: this.model});
 		this.$el.replaceWith(flashcardView.$el);

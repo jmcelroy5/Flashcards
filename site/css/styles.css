@@ -3,6 +3,9 @@ body{
     background-color: #eaeaea;
 }
 
+h3{
+	margin-bottom: 8px;
+}
 
 #wrapper{
 	width: 1500px;
@@ -19,7 +22,7 @@ body{
 	display: inline-block;
 }
 
-.edit-card, .card-content{
+.card-content{
 	display: inline-block;
 }
 
@@ -27,11 +30,10 @@ body{
 	line-height: 0.5;
 }
 
-.edit-card{
+.edit-card-options{
 	float: right;
-	height: 100%;
 }
 
-.edit-word, .edit-definition{
-	margin: 15px 0 20px 0;
+.edit-card-form{
+	line-height: 0.5;
 }
