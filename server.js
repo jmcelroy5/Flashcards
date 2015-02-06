@@ -31,7 +31,6 @@ mongoose.connect( 'mongodb://localhost/flashcards' );
 
 // database schema
 var schema = new mongoose.Schema({
-	_id: shortId,
 	word: String,
 	definition: String
 });

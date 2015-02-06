@@ -1,0 +1,37 @@
+body{
+    font-family: 'Source Sans Pro', sans-serif;
+    background-color: #eaeaea;
+}
+
+
+#wrapper{
+	width: 1500px;
+}
+
+.flashcard{
+	width: 300px;
+	height: 150px;
+	background-color: white;
+	margin-top: 20px;
+	margin-right: 20px;
+	padding: 30px;
+	border: 1px solid black;
+	display: inline-block;
+}
+
+.edit-card, .card-content{
+	display: inline-block;
+}
+
+.card-content{
+	line-height: 0.5;
+}
+
+.edit-card{
+	float: right;
+	height: 100%;
+}
+
+.edit-word, .edit-definition{
+	margin: 15px 0 20px 0;
+}
