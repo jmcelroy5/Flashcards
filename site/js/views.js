@@ -125,33 +125,29 @@ app.StudyModeView = Backbone.View.extend({
 		this.totalCards = this.collection.models.length;
 		this.numRight = 0;
 		this.numWrong = 0;
-		this.card = -1;
+		// this.card = -1;
 		// show first word
 		this.showWord();
 	},
 	render: function(){
 		this.$el.html(this.template());
 		this.$el.appendTo("#wrapper");
+		return this;
 	},
 	markRight: function(){
 		this.numRight++;
-		this.collection.remove(this.collection.models[this.card]);
-		this.card--;
+		this.collection.remove(this.collection.models[0]);
 		this.showWord();
 	},
 	markWrong: function(){
 		this.numWrong++;
-		this.collection.remove(this.collection.models[this.card]);
-		this.card--;
+		this.collection.remove(this.collection.models[0]);
 		this.showWord();
 	},
 	showWord: function(){
-		console.log('show word called');
 		if (!this.collection.length) this.showSummary();
 		else {
-			this.card++;
-			if (this.card >= this.collection.length) this.card = 0;
-			var word = this.collection.models[this.card].get("word");
+			var word = this.collection.models[0].get("word");
 			$(".word-def").text(word);
 		}
 	},
