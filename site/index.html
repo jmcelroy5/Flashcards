@@ -7,17 +7,19 @@
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
 </head>
 <body>
-	<h1> Your flashcards </h1>
+	
 	<div id="wrapper">
-		<div id="flashcards">
-			<!-- List of flashcards goes here -->
-		</div>
-		<div id="add-new-card">
-			<!-- Form to add new flashcard goes here -->
-		</div>
 	</div>
-
+	
 	<!-- Flashcard set view -->
+	<script type="text/template" id="flashcard-set-template">
+		<h1 class="title"> Your Flashcards </h1>
+		<button id="btn-study">Study</button>
+		<div id="flashcards"></div>
+		<div id="add-new-card"></div>
+	</script>
+
+	<!-- Add card form view -->
 	<script type="text/template" id="add-card-template">
 		<h2> Add a card </h2>
 		<form action="#" id="add-card-form">
@@ -52,6 +54,16 @@
 		</form>
 	</script>
 
+	<!-- Study Mode view -->
+	<script type="text/template" id="study-mode-template">
+	<div id="study-mode">
+		<p class="word-def"></p>
+		<button id="btn-thumbsdown">Keep in stack</button>
+		<button id="btn-flip">Flip</button>
+		<button id="btn-thumbsup">Got it</button>
+	</div>
+	</script>
+		
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
 	<script src="http://documentcloud.github.com/backbone/backbone-min.js"></script>

@@ -1,5 +1,6 @@
 var app = app || {};
 
+// individual flashcard view
 app.FlashcardView = Backbone.View.extend({
 	tagName: 'div',
 	className: 'flashcard',
@@ -26,6 +27,7 @@ app.FlashcardView = Backbone.View.extend({
 	}
 });
 
+// individual flashcard view in edit mode
 app.EditFlashcardView = Backbone.View.extend({
 	tagName: "div",
 	className: "flashcard",
@@ -55,12 +57,10 @@ app.EditFlashcardView = Backbone.View.extend({
 	}
 });
 
+// view of all the flashcards in a set
 app.FlashcardSetView = Backbone.View.extend({
-	el: $("#wrapper"),
+	template: _.template($("#flashcard-set-template").html()),
 	formTemplate: _.template($('#add-card-template').html()),
-	events: {
-		'click #btn-add': 'addCard',
-	},
 	initialize: function(){
 		this.collection = new app.FlashcardSet();
 		this.collection.fetch({reset: true});
@@ -70,11 +70,19 @@ app.FlashcardSetView = Backbone.View.extend({
 		this.listenTo( this.collection, 'reset', this.render );
 	},
 	render: function(){
+		// render template and append to dom
+		var html = this.template();
+		$("#wrapper").append(html);
+		// render each flashcard subview in collection
 		this.collection.each(function(flashcard){
 			this.renderFlashcard(flashcard);
 		}, this);
+		// render card form subview
 		var addCardForm = this.formTemplate();
 		$("#add-new-card").html(addCardForm);
+		// add event listeners 
+		$("#btn-add").click(this.addCard.bind(this));
+		$("#btn-study").click(this.studyMode.bind(this));
 	},
 	renderFlashcard: function(flashcard){
 		var flashcardView = new app.FlashcardView({model: flashcard});
@@ -89,5 +97,71 @@ app.FlashcardSetView = Backbone.View.extend({
 		});
 		this.collection.create(flashcard);
 		$("#add-card-form input").val('');
+	},
+	studyMode: function(){
+		new app.StudyModeView({collection: this.collection});
+		this.remove();
 	}
 });
+
+// TODO: flashcard set titles
+
+// study mode ideas 
+// - star the cards you want to study
+// - instead of "next" button: "thumbs up", "flip", thumbs down"
+
+// Fancy sidebar:
+// Remaining
+// Incorrect
+// Correct
+
+app.StudyModeView = Backbone.View.extend({
+	template: _.template($("#study-mode-template").html()),
+	initialize: function() {
+		this.render();
+		this.$el = $("#study-mode");
+		this.currentCard = -1;
+		this.totalCards = this.collection.models.length;
+		this.showWord();
+		// add event listeners
+		$("#btn-thumbsup").click(this.markRight.bind(this));
+		$("#btn-thumbsdown").click(this.markWrong.bind(this));
+		$("#btn-flip").click(this.showDefinition.bind(this));
+	},
+	render: function(){
+		$("#wrapper").empty();
+		var html = this.template();
+		$("#wrapper").append(html);
+	},
+	markRight: function(){
+		// remove card from stack
+		this.collection.remove(this.collection.models[this.currentCard]);
+		this.currentCard--;
+		this.showWord();
+	},
+	markWrong: function(){
+		this.showWord();
+	},
+	showWord: function(){
+		if (!this.collection.length){
+			this.showSummary();
+			return;
+		}
+		this.currentCard++;
+		if (this.currentCard >= this.collection.length) {
+			this.currentCard = 0;
+		}
+		var card = this.collection.models[this.currentCard];
+		$(".word-def").text(card.get("word"));
+	},
+	showDefinition: function(){
+		var card = this.collection.models[this.currentCard];
+		$(".word-def").text(card.get("definition"));
+	},
+	showSummary: function(){
+		$(".word-def").text("Nice job!");
+		// summary template with # correct / incorrect
+		this.$el.html("<p>Nice job!</p>");
+	}
+});
+

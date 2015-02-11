@@ -9,6 +9,7 @@ h3{
 
 #wrapper{
 	width: 1500px;
+	position: relative;
 }
 
 .flashcard{
@@ -36,4 +37,26 @@ h3{
 
 .edit-card-form{
 	line-height: 0.5;
+}
+
+#btn-study{
+	background-color: #307de1;
+	color: white;
+	width: 100px;
+	height: 50px;
+	font-size: 22px;
+	border-radius: 10px;
+	display: inline-block;
+}
+
+#study-mode {
+	background-color: white;
+	height: 300px;
+	width: 500px;
+	color: #307de1;
+	font-size: 40px;
+	text-align: center;
+	margin-left: 200px;
+	margin-top: 100px;
+	padding-top: 100px;
 }
