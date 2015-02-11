@@ -8,10 +8,9 @@
 </head>
 <body>
 	
-	<div id="wrapper">
-	</div>
-	
-	<!-- Flashcard set view -->
+	<div id="wrapper"></div>
+
+	<!-- Flashcard set  -->
 	<script type="text/template" id="flashcard-set-template">
 		<h1 class="title"> Your Flashcards </h1>
 		<button id="btn-study">Study</button>
@@ -19,17 +18,17 @@
 		<div id="add-new-card"></div>
 	</script>
 
-	<!-- Add card form view -->
+	<!-- Add card form  -->
 	<script type="text/template" id="add-card-template">
 		<h2> Add a card </h2>
 		<form action="#" id="add-card-form">
-			Word  <input type="text" name="word"><br>
-			Definition <input type="text" name="definition"><br>
+			Word  <input type="text" name="word">
+			Definition <input type="text" name="definition">
 			<button id="btn-add">Submit</button>
 		</form>
 	</script>
 	
-	<!-- Individual flashcard view -->
+	<!-- Individual flashcard  -->
 	<script type="text/template" id="flashcard-template">
 	<div class="card-content">
 		<h3> Word: </h3>
@@ -38,30 +37,40 @@
 		<p> <%= definition %> </p>
 	</div>
 	<div class="edit-card-options">
-		<a href="#" class="btn-edit"> Edit </a>|
-		<a href="#" class="btn-delete"> Delete </a>
+		<img class="btn-edit" src="../img/edit.png" />
 	</div>
 	</script>
 
-	<!-- Edit flashcard view -->
+	<!-- Edit flashcard  -->
 	<script type="text/template" id="edit-flashcard-template">
 		<form class="edit-card-form">
 			<h3> Word: </h3>
 			<input class="edit-word" type="text"></input><br>
 			<h3> Definition: </h3>
 			<input class="edit-definition" type="text"></input><br><br>
-			<input class="btn-submit-edit" type="submit" value="Save"></input>
+			<button class="btn-submit-edit">Save</button>
+			<img class="btn-delete" src="../img/delete.png" />
 		</form>
 	</script>
 
-	<!-- Study Mode view -->
+	<!-- Study Mode  -->
 	<script type="text/template" id="study-mode-template">
-	<div id="study-mode">
 		<p class="word-def"></p>
-		<button id="btn-thumbsdown">Keep in stack</button>
+		<button id="btn-thumbsdown">Keep</button>
 		<button id="btn-flip">Flip</button>
 		<button id="btn-thumbsup">Got it</button>
-	</div>
+	</script>
+
+	<!-- Study Mode summary -->
+	<script type="text/template" id="study-summary-template">
+		<p class="word-def">Session summary</p>
+		<div class="count">
+			<img class="checkmark" src="../img/checkmark.png" />
+			<%= correct %>
+			<img class="x" src="../img/wrong.png" />
+			<%= incorrect %> 
+		</div><br><br>
+		<a id="btn-back" href="/">Back to cards</a>
 	</script>
 		
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

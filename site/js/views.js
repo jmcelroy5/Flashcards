@@ -6,19 +6,15 @@ app.FlashcardView = Backbone.View.extend({
 	className: 'flashcard',
 	template: _.template($('#flashcard-template').html()),
 	events: {
-		'click .btn-delete': 'deleteCard',
 		'click .btn-edit': 'editCard'
 	},
 	initialize: function() {
 		this.render();
 	},
 	render: function(){
-		this.$el.html(this.template(this.model.toJSON()));
+		var html = this.template(this.model.toJSON());
+		this.$el.html(html);
 		return this;
-	},
-	deleteCard: function(e){
-		this.model.destroy();
-		this.remove();
 	},
 	editCard: function(){
 		var editView = new app.EditFlashcardView({model: this.model});
@@ -33,7 +29,8 @@ app.EditFlashcardView = Backbone.View.extend({
 	className: "flashcard",
 	template: _.template($("#edit-flashcard-template").html()),
 	events: {
-		'click .btn-submit-edit': 'submitEdit'
+		'click .btn-submit-edit': 'submitEdit',
+		'click .btn-delete': 'deleteCard'
 	},
 	initialize: function(){
 		this.render();
@@ -43,13 +40,17 @@ app.EditFlashcardView = Backbone.View.extend({
 		this.$el.html(html);
 		this.$el.find(".edit-word").val(this.model.get("word"));
 		this.$el.find(".edit-definition").val(this.model.get("definition"));
+		return this;
+	},
+	deleteCard: function(){
+		this.model.destroy();
+		this.remove();
 	},
 	submitEdit: function(e){
 		e.preventDefault();
-		var word = this.$el.find(".edit-word").val();
-		var definition = this.$el.find(".edit-definition").val();
-		this.model.set("word", word);
-		this.model.set("definition", definition);
+		// get new values and save them to the model
+		this.model.set("word", $(".edit-word").val());
+		this.model.set("definition", $(".edit-definition").val());
 		this.model.save();
 		var flashcardView = new app.FlashcardView({model: this.model});
 		this.$el.replaceWith(flashcardView.$el);
@@ -59,8 +60,14 @@ app.EditFlashcardView = Backbone.View.extend({
 
 // view of all the flashcards in a set
 app.FlashcardSetView = Backbone.View.extend({
+	tagName: "div",
+	className: "set",
 	template: _.template($("#flashcard-set-template").html()),
 	formTemplate: _.template($('#add-card-template').html()),
+	events: {
+		"click #btn-add": "addCard",
+		"click #btn-study": "studyMode"
+	},
 	initialize: function(){
 		this.collection = new app.FlashcardSet();
 		this.collection.fetch({reset: true});
@@ -71,8 +78,8 @@ app.FlashcardSetView = Backbone.View.extend({
 	},
 	render: function(){
 		// render template and append to dom
-		var html = this.template();
-		$("#wrapper").append(html);
+		this.$el.html(this.template());
+		this.$el.appendTo("#wrapper");
 		// render each flashcard subview in collection
 		this.collection.each(function(flashcard){
 			this.renderFlashcard(flashcard);
@@ -80,9 +87,6 @@ app.FlashcardSetView = Backbone.View.extend({
 		// render card form subview
 		var addCardForm = this.formTemplate();
 		$("#add-new-card").html(addCardForm);
-		// add event listeners 
-		$("#btn-add").click(this.addCard.bind(this));
-		$("#btn-study").click(this.studyMode.bind(this));
 	},
 	renderFlashcard: function(flashcard){
 		var flashcardView = new app.FlashcardView({model: flashcard});
@@ -104,64 +108,77 @@ app.FlashcardSetView = Backbone.View.extend({
 	}
 });
 
-// TODO: flashcard set titles
-
-// study mode ideas 
-// - star the cards you want to study
-// - instead of "next" button: "thumbs up", "flip", thumbs down"
-
-// Fancy sidebar:
-// Remaining
-// Incorrect
-// Correct
+// TODO: flashcard decks
 
 app.StudyModeView = Backbone.View.extend({
+	tagName: "div",
+	className: "study-mode",
 	template: _.template($("#study-mode-template").html()),
+	events: {
+		"click #btn-thumbsup": "markRight",
+		"click #btn-thumbsdown": "markWrong",
+		"click #btn-flip": "showDefinition"
+	},
 	initialize: function() {
 		this.render();
-		this.$el = $("#study-mode");
-		this.currentCard = -1;
+		// this.collection = new app.FlashcardSet();
+		// this.collection.fetch({reset: true});
+
+		this.collection.fetch();
+		// initialize counters
 		this.totalCards = this.collection.models.length;
+		this.numRight = 0;
+		this.numWrong = 0;
+		this.card = -1;
+		// show first word
 		this.showWord();
-		// add event listeners
-		$("#btn-thumbsup").click(this.markRight.bind(this));
-		$("#btn-thumbsdown").click(this.markWrong.bind(this));
-		$("#btn-flip").click(this.showDefinition.bind(this));
 	},
 	render: function(){
-		$("#wrapper").empty();
-		var html = this.template();
-		$("#wrapper").append(html);
+		this.$el.html(this.template());
+		this.$el.appendTo("#wrapper");
 	},
 	markRight: function(){
-		// remove card from stack
-		this.collection.remove(this.collection.models[this.currentCard]);
-		this.currentCard--;
+		this.numRight++;
+		this.collection.remove(this.collection.models[this.card]);
+		// this.card--;
 		this.showWord();
 	},
 	markWrong: function(){
+		console.log("markwrong called");
+		this.numWrong++;
 		this.showWord();
 	},
 	showWord: function(){
-		if (!this.collection.length){
-			this.showSummary();
-			return;
+		console.log('show word called');
+		if (!this.collection.length) this.showSummary();
+		else {
+			this.card++;
+			if (this.card++ >= this.collection.length) this.card = 0;
+			var word = this.collection.models[this.card].get("word");
+			$(".word-def").text(word);
 		}
-		this.currentCard++;
-		if (this.currentCard >= this.collection.length) {
-			this.currentCard = 0;
-		}
-		var card = this.collection.models[this.currentCard];
-		$(".word-def").text(card.get("word"));
 	},
 	showDefinition: function(){
-		var card = this.collection.models[this.currentCard];
+		var card = this.collection.models[this.card];
 		$(".word-def").text(card.get("definition"));
 	},
 	showSummary: function(){
-		$(".word-def").text("Nice job!");
-		// summary template with # correct / incorrect
-		this.$el.html("<p>Nice job!</p>");
+		var summaryView = new app.StudySummaryView({
+			correct: this.numRight,
+			incorrect: this.numWrong
+		});
+		this.$el.replaceWith(summaryView.el);
+	}
+});
+
+app.StudySummaryView = Backbone.View.extend({
+	tagName: "div",
+	className: "study-mode",
+	template: _.template($("#study-summary-template").html()),
+	initialize: function(options){
+		var html = this.template(this.options);
+		this.$el.html(html);
+		return this;
 	}
 });
 
