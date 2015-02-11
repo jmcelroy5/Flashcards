@@ -121,10 +121,6 @@ app.StudyModeView = Backbone.View.extend({
 	},
 	initialize: function() {
 		this.render();
-		// this.collection = new app.FlashcardSet();
-		// this.collection.fetch({reset: true});
-
-		this.collection.fetch();
 		// initialize counters
 		this.totalCards = this.collection.models.length;
 		this.numRight = 0;
@@ -140,12 +136,13 @@ app.StudyModeView = Backbone.View.extend({
 	markRight: function(){
 		this.numRight++;
 		this.collection.remove(this.collection.models[this.card]);
-		// this.card--;
+		this.card--;
 		this.showWord();
 	},
 	markWrong: function(){
-		console.log("markwrong called");
 		this.numWrong++;
+		this.collection.remove(this.collection.models[this.card]);
+		this.card--;
 		this.showWord();
 	},
 	showWord: function(){
@@ -153,7 +150,7 @@ app.StudyModeView = Backbone.View.extend({
 		if (!this.collection.length) this.showSummary();
 		else {
 			this.card++;
-			if (this.card++ >= this.collection.length) this.card = 0;
+			if (this.card >= this.collection.length) this.card = 0;
 			var word = this.collection.models[this.card].get("word");
 			$(".word-def").text(word);
 		}
